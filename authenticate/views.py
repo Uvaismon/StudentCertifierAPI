@@ -1,6 +1,7 @@
+from rest_framework import serializers
 from rest_framework.utils import serializer_helpers
 from rest_framework.views import APIView, Response
-from .serializers import RegisterStudentSerializer, LoginStudentSerializer
+from .serializers import RegisterStudentSerializer, LoginStudentSerializer, LogoutStudentSerializer
 
 # Create your views here.
 
@@ -31,3 +32,13 @@ class LoginStudent(APIView):
         return Response({
             'token': token
         })
+
+class LogoutStudent(APIView):
+    serializer_class = LogoutStudentSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        serializer.delete_token(serializer.data)
+        return Response({})

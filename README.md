@@ -26,3 +26,14 @@
 > ### Return values
 > - token: User token if authentication was successful, error message if authentication failed.
 
+> ## ***/auth/logout-student***  
+> Logout from student account.  
+> 
+> ### Methods allowed  
+> - POST
+> 
+> ### Fields required  
+> token: Token of the user  
+>  
+> ### Return values
+> - None

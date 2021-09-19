@@ -37,3 +37,13 @@ class LoginStudentSerializer(serializers.Serializer):
             return None
         else:
             return str(Token.objects.get_or_create(user=user)[0])
+
+class LogoutStudentSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=64)
+
+    def delete_token(self, validated_data):
+        try:
+            token = Token.objects.get(key=validated_data['token'])
+            token.delete()
+        except Token.DoesNotExist:
+            return
