@@ -13,21 +13,21 @@
 > ### Return values
 > - message: Error message if any exception is raised. Success message is the account is created suucessfully.  
 
-> ## ***/auth/login-student***  
-> Login into student account.  
+> ## ***/auth/login***  
+> Login into user account.  
 > 
 > ### Methods allowed  
 > - POST
 > 
 > ### Fields required  
-> - username: Student username.   
-> - password: Password of the student account.  
+> - username: account username.   
+> - password: Password of the account.  
 >  
 > ### Return values
 > - token: User token if authentication was successful, error message if authentication failed.
 
-> ## ***/auth/logout-student***  
-> Logout from student account.  
+> ## ***/auth/logout***  
+> Logout from user account.  
 > 
 > ### Methods allowed  
 > - POST
@@ -45,23 +45,10 @@
 > - POST
 > 
 > ### Fields required  
-> - university_code: Unique identification code for the university.  
+> - username: Unique identification username for the university.  
 > - name: Name of the University.  
 > - email: Email ID of the university.  
 > - password: Password for the new account to be created.  
 >  
 > ### Return values
 > - message: Error message if any exception is raised. Success message is the account is created suucessfully. 
-
-> ## ***/auth/login-university***  
-> Login into university account.  
-> 
-> ### Methods allowed  
-> - POST
-> 
-> ### Fields required  
-> - university_code:Unique identification code for the university.   
-> - password: Password of the university account.  
->  
-> ### Return values
-> - token: User token if authentication was successful, error message if authentication failed.
