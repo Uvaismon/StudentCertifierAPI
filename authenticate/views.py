@@ -4,7 +4,7 @@ from rest_framework.views import APIView, Response
 from django.db.utils import IntegrityError
 
 from .serializers import (RegisterStudentSerializer, LoginStudentSerializer, LogoutStudentSerializer,
-                          RegisterUniversitySerializer)
+                          RegisterUniversitySerializer, LoginUniversitySerializer)
 
 
 class RegisterStudent(APIView):
@@ -67,4 +67,20 @@ class Registeruniversity(APIView):
 
         return Response({
             'message': message
+        })
+
+class LoginUniversity(APIView):
+    serializer_class = LoginUniversitySerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        token = serializer.get_token(serializer.data)
+        if token is None:
+            return Response({
+                'token': 'Authentication failed'
+            })
+        return Response({
+            'token': token
         })
