@@ -1,5 +1,5 @@
-> ## ***/auth/RegisterStudent***  
-> Register students account.  
+> ## ***/auth/register-student***  
+> Create student account.  
 > 
 > ### Methods allowed  
 > - POST
@@ -12,5 +12,17 @@
 >  
 > ### Return values
 > - message: Error message if any exception is raised. Success message is the account is created suucessfully.  
-> code: HTTP status code.  
+
+> ## ***/auth/login-student***  
+> Login into student account.  
+> 
+> ### Methods allowed  
+> - POST
+> 
+> ### Fields required  
+> - usn: Student identification number.   
+> - password: Password of the student account.  
+>  
+> ### Return values
+> - token: User token if authentication was successful, error message if authentication failed.
 
