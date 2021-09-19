@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
-from .models import Student
+from .models import Student, University
 
 class RegisterStudentSerializer(serializers.Serializer):
-    usn = serializers.CharField(max_length=32)
+    Username = serializers.CharField(max_length=32)
     name = serializers.CharField(max_length=64)
     email = serializers.EmailField()
     password = serializers.CharField(max_length=32)
@@ -15,7 +15,7 @@ class RegisterStudentSerializer(serializers.Serializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(
-            username=validated_data['usn'], 
+            username=validated_data['Username'], 
             email=validated_data['email']
         )
         user.set_password(password)
@@ -28,11 +28,11 @@ class RegisterStudentSerializer(serializers.Serializer):
         return student
 
 class LoginStudentSerializer(serializers.Serializer):
-    usn = serializers.CharField(max_length=32)
+    Username = serializers.CharField(max_length=32)
     password = serializers.CharField(max_length=32)
 
     def get_token(self, validated_data):
-        user = authenticate(username=validated_data['usn'], password=validated_data['password'])
+        user = authenticate(username=validated_data['Username'], password=validated_data['password'])
         if not user:
             return None
         else:
@@ -47,3 +47,24 @@ class LogoutStudentSerializer(serializers.Serializer):
             token.delete()
         except Token.DoesNotExist:
             return
+
+class RegisterUniversitySerializer(serializers.Serializer):
+    university_code = serializers.CharField(max_length=32)
+    name = serializers.CharField(max_length=64)
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=32)
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(
+            username=validated_data['university_code'], 
+            email=validated_data['email']
+        )
+        user.set_password(password)
+        user.save()
+        university = University(
+            name=validated_data['name'],
+            user=user
+        )
+        university.save()
+        return university

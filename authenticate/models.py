@@ -7,3 +7,7 @@ from django.db.models.fields.related import OneToOneField
 class Student(models.Model):
     name = models.CharField(max_length=64)
     user = OneToOneField(User, on_delete=models.CASCADE)
+
+class University(models.Model):
+    name = models.CharField(max_length=64)
+    user = OneToOneField(User, on_delete=models.CASCADE)

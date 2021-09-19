@@ -5,7 +5,7 @@
 > - POST
 > 
 > ### Fields required  
-> - usn: Student identification number.  
+> - Username: Student username.  
 > - name: Name of the student.  
 > - email: Email ID of the student.  
 > - password: Password for the new account to be created.  
@@ -20,7 +20,7 @@
 > - POST
 > 
 > ### Fields required  
-> - usn: Student identification number.   
+> - Username: Student username.   
 > - password: Password of the student account.  
 >  
 > ### Return values
@@ -37,3 +37,18 @@
 >  
 > ### Return values
 > - None
+
+> ## ***/auth/register-university***  
+> Create university account.  
+> 
+> ### Methods allowed  
+> - POST
+> 
+> ### Fields required  
+> - university_code: Unique identification code for the university.  
+> - name: Name of the University.  
+> - email: Email ID of the university.  
+> - password: Password for the new account to be created.  
+>  
+> ### Return values
+> - message: Error message if any exception is raised. Success message is the account is created suucessfully. 

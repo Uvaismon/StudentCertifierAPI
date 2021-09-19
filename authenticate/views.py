@@ -1,9 +1,11 @@
 from rest_framework import serializers
 from rest_framework.utils import serializer_helpers
 from rest_framework.views import APIView, Response
-from .serializers import RegisterStudentSerializer, LoginStudentSerializer, LogoutStudentSerializer
+from django.db.utils import IntegrityError
 
-# Create your views here.
+from .serializers import (RegisterStudentSerializer, LoginStudentSerializer, LogoutStudentSerializer,
+                          RegisterUniversitySerializer)
+
 
 class RegisterStudent(APIView):
     serializer_class = RegisterStudentSerializer
@@ -12,10 +14,15 @@ class RegisterStudent(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
-        serializer.save()
+        try:
+            serializer.save()
+            message = 'Account created successfully'
+        except IntegrityError:
+            message = 'Username already exists'
         return Response({
-            'message': "Account created successfully"
+            'message': message
         })
+
 
 class LoginStudent(APIView):
     serializer_class = LoginStudentSerializer
@@ -33,6 +40,7 @@ class LoginStudent(APIView):
             'token': token
         })
 
+
 class LogoutStudent(APIView):
     serializer_class = LogoutStudentSerializer
     http_method_names = ['post']
@@ -42,3 +50,21 @@ class LogoutStudent(APIView):
         serializer.is_valid()
         serializer.delete_token(serializer.data)
         return Response({})
+
+
+class Registeruniversity(APIView):
+    serializer_class = RegisterUniversitySerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        try:
+            serializer.save()
+            message = 'Account created successfully'
+        except IntegrityError:
+            message = 'University code already exists'
+
+        return Response({
+            'message': message
+        })
