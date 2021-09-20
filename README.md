@@ -56,3 +56,19 @@
 >  
 > ### Return values
 > - message: Error message if any exception is raised. Success message is the account is created suucessfully. 
+
+> ## ***/cert/certificate-request***  
+> Students request for certificate.  
+>
+> ### Methods allowed  
+> - POST  
+>
+> ### Fields required  
+> - token: Authentication token.  
+> - university: University code, same as university username.  
+> - course: Name of the course completed.  
+> grade_obtained: Grade obtained in the course.  
+>
+> ### Return values
+> - message: Error message if any, success message if the request was successful.  
+> - result: 1, if the request was successful, 0 otherwise.  
