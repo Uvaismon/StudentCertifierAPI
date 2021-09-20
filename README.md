@@ -1,17 +1,22 @@
-> ## ***/auth/register-student***  
-> Create student account.  
+> ## ***/auth/register/<user_type>***  
+> Create user account.  
 > 
 > ### Methods allowed  
 > - POST
+>
+> ### user_type
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+> Type of user account. Allowed values are (student, university)  
 > 
 > ### Fields required  
-> - username: Student username.  
-> - name: Name of the student.  
-> - email: Email ID of the student.  
+> - username: user username.  
+> - name: Name of the user.  
+> - email: Email ID of the user.  
 > - password: Password for the new account to be created.  
 >  
 > ### Return values
-> - message: Error message if any exception is raised. Success message is the account is created suucessfully.  
+> - message: Error message if any exception is raised. Success message if the account is created suucessfully. 
+> - result: 1, if account created successfully, 0 otherwise.   
 
 > ## ***/auth/login/<user_type>***  
 > Login into user account.  
@@ -29,6 +34,7 @@
 >  
 > ### Return values
 > - token: User token if authentication was successful, error message if authentication failed.
+> - result: 1, if the authentication was successful, 0 otherwise.  
 
 > ## ***/auth/logout***  
 > Logout from user account.  
@@ -40,22 +46,7 @@
 > token: Token of the user  
 >  
 > ### Return values
-> - None
-
-> ## ***/auth/register-university***  
-> Create university account.  
-> 
-> ### Methods allowed  
-> - POST
-> 
-> ### Fields required  
-> - username: Unique identification username for the university.  
-> - name: Name of the University.  
-> - email: Email ID of the university.  
-> - password: Password for the new account to be created.  
->  
-> ### Return values
-> - message: Error message if any exception is raised. Success message is the account is created suucessfully. 
+> - None 
 
 > ## ***/cert/certificate-request***  
 > Students request for certificate.  

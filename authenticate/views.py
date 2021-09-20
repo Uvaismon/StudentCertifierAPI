@@ -12,15 +12,18 @@ class RegisterStudent(APIView):
     http_method_names = ['post']
 
     def post(self, request):
+        result = 0
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
         try:
             serializer.save()
             message = 'Account created successfully'
+            result = 1
         except IntegrityError:
             message = 'Username already exists'
         return Response({
-            'message': message
+            'message': message,
+            'result': result
         })
 
 
@@ -29,15 +32,16 @@ class Login(APIView):
     http_method_names = ['post']
 
     def post(self, request, user):
+        result = 1
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
         token = serializer.get_token(serializer.data, user)
         if token is None:
-            return Response({
-                'token': 'Authentication failed'
-            })
+            token = 'Authentication failed'
+            result = 0
         return Response({
-            'token': token
+            'token': token,
+            'result': result
         })
 
 
@@ -57,14 +61,17 @@ class RegisterUniversity(APIView):
     http_method_names = ['post']
 
     def post(self, request):
+        result = 0
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
         try:
             serializer.save()
             message = 'Account created successfully'
+            result = 1
         except IntegrityError:
             message = 'University code already exists'
 
         return Response({
-            'message': message
+            'message': message,
+            'result': result
         })
