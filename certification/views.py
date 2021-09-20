@@ -1,8 +1,16 @@
 from rest_framework.serializers import Serializer
+from rest_framework.utils import serializer_helpers
 from rest_framework.views import APIView, Response
-from .serializers import CertificateRequestSerializer
+from .serializers import CertificateRequestSerializer, CertificateApproveSerializer
+from .helper_functions.pdf_helper import from_html
+from .helper_functions.hash_helper import hash_from_file
+from datetime import date
+from certification_api.settings import contract_helper, firebase_storage
+import os
+from .helper_functions.email_helper import send_mail
 
 # Create your views here.
+
 
 class CertificateRequest(APIView):
     serializer_class = CertificateRequestSerializer
@@ -16,12 +24,59 @@ class CertificateRequest(APIView):
         if not user:
             message = 'Authentication failed'
         else:
-            certificate_id = serializer.request(validated_data=serializer.data, user=user)
+            certificate_id = serializer.request(
+                validated_data=serializer.data, user=user)
             if certificate_id is None:
                 message = 'University code does not exists'
             else:
                 message = f'Request submitted successfully with ID {certificate_id}'
                 result = 1
+        return Response({
+            'message': message,
+            'result': result
+        })
+
+
+class CertificateApproval(APIView):
+    serializer_class = CertificateApproveSerializer
+    http_method_names = ['post']
+
+    def post(self, requuest):
+        result = 0
+        serializer = self.serializer_class(data=requuest.data)
+        serializer.is_valid()
+        user = serializer.authenticate(token=serializer.data['token'])
+        if not user:
+            message = 'Authentication failed'
+        else:
+            certificate = serializer.is_authorized(
+                serializer.data['certificate_id'], user)
+            if not certificate:
+                message = 'Authorization failed'
+            else:
+                certificate.certified_on = date.today()
+                context = {
+                    'certificate_id': certificate.certificate_id,
+                    'student_name': certificate.student.name,
+                    'course': certificate.course,
+                    'university_name': certificate.university.name,
+                    'generated_on': certificate.certified_on,
+                    'grade_obtained': certificate.grade_obtained,
+                    'email': certificate.student.user.email,
+                }
+                certificate_filename = from_html(context)
+                file_hash = hash_from_file(certificate_filename)
+                contract_helper.add_hash(certificate.certificate_id, file_hash)
+                firebase_storage.child(f'{certificate.certificate_id}.pdf').put(certificate_filename)
+                url = firebase_storage.child(f'{certificate.certificate_id}.pdf').get_url(None)
+                certificate.certificate_link = url
+                certificate.certified = True
+                certificate.save()
+                context['url'] = url
+                send_mail(context)
+                os.remove(certificate_filename)
+                result = 1
+                message = 'Certificate generated successfully'
         return Response({
             'message': message,
             'result': result

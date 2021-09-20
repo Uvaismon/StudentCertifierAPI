@@ -63,3 +63,16 @@
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
 > - result: 1, if the request was successful, 0 otherwise.  
+
+> ## ***/cert/certificate-approve***  
+> Universities generates certificates using this endpoint.
+>
+> ### Methods allowed  
+> - POST
+> ### Fieds Required
+> - certificate_id: ID of the certification request make by the student.   
+> - token: University authentication token.  
+>
+> ### Return values
+> - message: Error message if any, success message if the request was successful.  
+> - result: 1, if the request was successful, 0 otherwise.  

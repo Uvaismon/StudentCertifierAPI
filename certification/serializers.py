@@ -32,3 +32,24 @@ class CertificateRequestSerializer(serializers.Serializer):
         )
         certificate.save()
         return certificate.certificate_id
+
+class CertificateApproveSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=64)
+    certificate_id = serializers.IntegerField()
+
+    def authenticate(self, token):
+        try:
+            token = Token.objects.get(key=token)
+            university = University.objects.get(user=token.user)
+            return university
+        except (Token.DoesNotExist, University.DoesNotExist):
+            return None
+
+    def is_authorized(self, certificate_id, user):
+        try:
+            certificate = Certificate.objects.get(certificate_id=certificate_id)
+            if not certificate.university == user or certificate.certified:
+                return None
+            return certificate
+        except Certificate.DoesNotExist:
+            return None

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from certification.helper_functions.contract_helper import ContractHelper
+from decouple import config
+import pyrebase
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -135,3 +138,20 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+# Smart contract settings
+contract_helper = ContractHelper(config('BLOCKCHAIN_NETWORK_URL'), config('CONTRACT_ADDRESS'))
+
+config = {
+        'apiKey': config('FIREBASE_APIKEY'),
+        'authDomain': "studentcertificate-9ade1.firebaseapp.com",
+        'projectId': config('FIREBASE_PROJECTID'),
+        'storageBucket': config('FIREBASE_STORAGBUCKET'),
+        'messagingSenderId': config('FIREBASE_MESSAGINGSENDERID'),
+        'appId': config('FIREBASE_APIID'),
+        'measurementId': config('FIREBASE_MEASUREMENTID'),
+        'databaseURL': None
+    }
+
+firebase = pyrebase.initialize_app(config)
+firebase_storage = firebase.storage()
