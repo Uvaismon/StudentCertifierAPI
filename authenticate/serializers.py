@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -31,12 +32,24 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=32)
     password = serializers.CharField(max_length=32)
 
-    def get_token(self, validated_data):
+    def get_token(self, validated_data, user_type):
         user = authenticate(username=validated_data['username'], password=validated_data['password'])
         if not user:
             return None
+        if user_type == 'student':
+            try:
+                student = Student.objects.get(user=user)
+                return str(Token.objects.get_or_create(user=user)[0])
+            except Student.DoesNotExist:
+                return None
+        elif user_type == 'university':
+            try:
+                university = University.objects.get(user=user)
+                return str(Token.objects.get_or_create(user=user)[0])
+            except University.DoesNotExist:
+                return None
         else:
-            return str(Token.objects.get_or_create(user=user)[0])
+            return None
 
 class LogoutSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=64)

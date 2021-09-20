@@ -13,11 +13,15 @@
 > ### Return values
 > - message: Error message if any exception is raised. Success message is the account is created suucessfully.  
 
-> ## ***/auth/login***  
+> ## ***/auth/login/<user_type>***  
 > Login into user account.  
 > 
 > ### Methods allowed  
 > - POST
+>
+> ### user_type
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+>Type of user account. Allowed values are (student, university)
 > 
 > ### Fields required  
 > - username: account username.   

@@ -28,10 +28,10 @@ class Login(APIView):
     serializer_class = LoginSerializer
     http_method_names = ['post']
 
-    def post(self, request):
+    def post(self, request, user):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
-        token = serializer.get_token(serializer.data)
+        token = serializer.get_token(serializer.data, user)
         if token is None:
             return Response({
                 'token': 'Authentication failed'
