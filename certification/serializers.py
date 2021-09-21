@@ -53,3 +53,11 @@ class CertificateApproveSerializer(serializers.Serializer):
             return certificate
         except Certificate.DoesNotExist:
             return None
+
+class CertificateDetailsSerializer(serializers.ModelSerializer):
+    student = serializers.CharField(max_length=255)
+    university = serializers.CharField(max_length=255)
+    
+    class Meta:
+        model = Certificate
+        fields = '__all__'

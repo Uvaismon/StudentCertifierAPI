@@ -1,13 +1,13 @@
-from rest_framework.serializers import Serializer
-from rest_framework.utils import serializer_helpers
+from rest_framework import generics
 from rest_framework.views import APIView, Response
-from .serializers import CertificateRequestSerializer, CertificateApproveSerializer
+from .serializers import CertificateRequestSerializer, CertificateApproveSerializer, CertificateDetailsSerializer
 from .helper_functions.pdf_helper import from_html
 from .helper_functions.hash_helper import hash_from_file
 from datetime import date
 from certification_api.settings import contract_helper, firebase_storage
 import os
 from .helper_functions.email_helper import send_mail
+from .models import Certificate
 
 # Create your views here.
 
@@ -81,3 +81,12 @@ class CertificateApproval(APIView):
             'message': message,
             'result': result
         })
+
+class CertificateDetails(generics.ListAPIView):
+    serializer_class = CertificateDetailsSerializer
+
+    def get_queryset(self):
+        certificate_id = self.request.query_params.get('certificate_id')
+        if certificate_id is None:
+            return None
+        return Certificate.objects.filter(pk=certificate_id)

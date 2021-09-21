@@ -69,10 +69,19 @@
 >
 > ### Methods allowed  
 > - POST
-> ### Fieds Required
+> ### Fieds required
 > - certificate_id: ID of the certification request make by the student.   
 > - token: University authentication token.  
 >
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
 > - result: 1, if the request was successful, 0 otherwise.  
+
+> ## /cert/certificate-details  
+> Fetch certificate details.  
+>
+> ### Methods allowed  
+> - GET
+>
+> ### Fields required
+> - certificate_id: ID of the certificate to fetch the details.
