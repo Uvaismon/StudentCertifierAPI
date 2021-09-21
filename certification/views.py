@@ -1,6 +1,8 @@
+from authenticate.models import University
 from rest_framework import generics
 from rest_framework.views import APIView, Response
-from .serializers import CertificateRequestSerializer, CertificateApproveSerializer, CertificateDetailsSerializer
+from .serializers import (CertificateRequestSerializer, CertificateApproveSerializer,
+                          CertificateDetailsSerializer, CertificateListSerializer)
 from .helper_functions.pdf_helper import from_html
 from .helper_functions.hash_helper import hash_from_file
 from datetime import date
@@ -8,6 +10,7 @@ from certification_api.settings import contract_helper, firebase_storage
 import os
 from .helper_functions.email_helper import send_mail
 from .models import Certificate
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -67,8 +70,10 @@ class CertificateApproval(APIView):
                 certificate_filename = from_html(context)
                 file_hash = hash_from_file(certificate_filename)
                 contract_helper.add_hash(certificate.certificate_id, file_hash)
-                firebase_storage.child(f'{certificate.certificate_id}.pdf').put(certificate_filename)
-                url = firebase_storage.child(f'{certificate.certificate_id}.pdf').get_url(None)
+                firebase_storage.child(f'{certificate.certificate_id}.pdf').put(
+                    certificate_filename)
+                url = firebase_storage.child(
+                    f'{certificate.certificate_id}.pdf').get_url(None)
                 certificate.certificate_link = url
                 certificate.certified = True
                 certificate.save()
@@ -82,6 +87,7 @@ class CertificateApproval(APIView):
             'result': result
         })
 
+
 class CertificateDetails(generics.ListAPIView):
     serializer_class = CertificateDetailsSerializer
 
@@ -90,3 +96,21 @@ class CertificateDetails(generics.ListAPIView):
         if certificate_id is None:
             return None
         return Certificate.objects.filter(pk=certificate_id)
+
+class CertificateListUniversity(generics.ListAPIView):
+    serializer_class = CertificateListSerializer
+
+    def get_queryset(self):
+        university_code = self.request.query_params.get('university_code')
+        try:
+            certified = self.request.query_params.get('certified').lower() == 'true'
+        except AttributeError:
+            certified = False
+        if not university_code:
+            return None
+        try:
+            user = User.objects.get(username=university_code)
+            univeristy = University.objects.get(user=user)
+        except (User.DoesNotExist, University.DoesNotExist):
+            return None
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified)

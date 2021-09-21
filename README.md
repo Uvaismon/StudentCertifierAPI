@@ -77,11 +77,36 @@
 > - message: Error message if any, success message if the request was successful.  
 > - result: 1, if the request was successful, 0 otherwise.  
 
-> ## /cert/certificate-details  
+> ## ***/cert/certificate-details***  
 > Fetch certificate details.  
 >
 > ### Methods allowed  
 > - GET
 >
+> ### Fields required  
+> - certificate_id: ID of the certificate to fetch the details.  
+>
+> ### Return values  
+> Returns a list of json objects.
+> - certificate_id: ID of the certificate.  
+> - student: Name of the student.  
+> - university: Name of the university.  
+> - course: Name of the course completed.  
+> - grade_obtained: Grade obtained in the course.  
+> - certified_on: Certificate generation data.
+> - certificate_link: Certificate download link.  
+> - certified: A bool value denoting if the certificate is generated or not.  
+
+> ## ***cert/certificate-list-university***
+> Get the list of certificate maintained my an university.  
+>
+> ### Methods allowed  
+> - GET  
+>
 > ### Fields required
-> - certificate_id: ID of the certificate to fetch the details.
+> - university_code: username of univeristy account.
+> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.  
+>
+> ### Return values
+> Return a list of certificate IDs.  
+> - certificate_id: ID of the certificate
