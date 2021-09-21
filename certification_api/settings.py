@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-tuir$bl_i!-op(84xpmycqkp*tzp6wjj*shsb2ot_1$*xb86v*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://student-certificate-api.herokuapp.com']
 
 
 # Application definition
