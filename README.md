@@ -124,3 +124,16 @@
 > ### Return values
 > Return a list of certificate IDs.  
 > - certificate_id: ID of the certificate  
+
+> ## ***cert/certificate-verification***  
+> Upload a certificate to check the integrity of the certificate.
+> ### Method allowed
+> - POST
+>
+> ### Fields required  
+> certificate: Certificate pdf file.
+> certificate_id: ID of the certificate uploaded.  
+>
+> ### Return value
+> - message: Message denoting if the certificate is valid or not.  
+> - result: 1, if the request was successful, 0 otherwise.  

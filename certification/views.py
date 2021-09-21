@@ -2,9 +2,10 @@ from authenticate.models import Student, University
 from rest_framework import generics
 from rest_framework.views import APIView, Response
 from .serializers import (CertificateRequestSerializer, CertificateApproveSerializer,
-                          CertificateDetailsSerializer, CertificateListSerializer)
+                          CertificateDetailsSerializer, CertificateListSerializer,
+                          CertificateVerificationSerializer)
 from .helper_functions.pdf_helper import from_html
-from .helper_functions.hash_helper import hash_from_file
+from .helper_functions.hash_helper import hash_from_file, from_file_object
 from datetime import date
 from certification_api.settings import contract_helper, firebase_storage
 import os
@@ -44,9 +45,9 @@ class CertificateApproval(APIView):
     serializer_class = CertificateApproveSerializer
     http_method_names = ['post']
 
-    def post(self, requuest):
+    def post(self, request):
         result = 0
-        serializer = self.serializer_class(data=requuest.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
         user = serializer.authenticate(token=serializer.data['token'])
         if not user:
@@ -97,13 +98,15 @@ class CertificateDetails(generics.ListAPIView):
             return None
         return Certificate.objects.filter(pk=certificate_id)
 
+
 class CertificateListUniversity(generics.ListAPIView):
     serializer_class = CertificateListSerializer
 
     def get_queryset(self):
         university_code = self.request.query_params.get('university_code')
         try:
-            certified = self.request.query_params.get('certified').lower() == 'true'
+            certified = self.request.query_params.get(
+                'certified').lower() == 'true'
         except AttributeError:
             certified = False
         if not university_code:
@@ -115,13 +118,15 @@ class CertificateListUniversity(generics.ListAPIView):
             return None
         return Certificate.objects.filter(university=univeristy).filter(certified=certified)
 
+
 class CertificateListStudent(generics.ListAPIView):
     serializer_class = CertificateListSerializer
 
     def get_queryset(self):
         username = self.request.query_params.get('student')
         try:
-            certified = self.request.query_params.get('certified').lower() == 'true'
+            certified = self.request.query_params.get(
+                'certified').lower() == 'true'
         except AttributeError:
             certified = False
         if not username:
@@ -132,3 +137,28 @@ class CertificateListStudent(generics.ListAPIView):
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
         return Certificate.objects.filter(student=student).filter(certified=certified)
+
+
+class CertificateVerification(APIView):
+    serializer_class = CertificateVerificationSerializer
+
+    def post(self, request):
+        try:
+            file = request.FILES.get('certificate', None)
+            certificate_id = int(request.POST.get('certificate_id', None))
+            if not file or not certificate_id:
+                raise(ValueError)
+            file_hash=from_file_object(file)
+            validity=contract_helper.compare_hash(certificate_id, file_hash)
+            if validity:
+                message='The certificate is valid'
+            else:
+                message='The certificate is invalid'
+            result=1
+        except ValueError:
+            result=0
+            message='Invalid data recieved'
+        return Response({
+            'message': message,
+            'result': result
+        })

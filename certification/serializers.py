@@ -66,3 +66,7 @@ class CertificateListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = ['certificate_id']
+
+class CertificateVerificationSerializer(serializers.Serializer):
+    certificate = serializers.FileField()
+    certificate_id = serializers.IntegerField()
