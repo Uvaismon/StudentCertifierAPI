@@ -1,0 +1,1 @@
+web: gunicorn -c gconfig.py StudentCertificationWeb.wsgi

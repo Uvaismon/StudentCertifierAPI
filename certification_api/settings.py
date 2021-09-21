@@ -14,6 +14,8 @@ from pathlib import Path
 from certification.helper_functions.contract_helper import ContractHelper
 from decouple import config
 import pyrebase
+import django_heroku
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -127,6 +129,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -155,3 +160,5 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 firebase_storage = firebase.storage()
+
+django_heroku.settings(locals())
