@@ -1,4 +1,4 @@
-from authenticate.models import University
+from authenticate.models import Student, University
 from rest_framework import generics
 from rest_framework.views import APIView, Response
 from .serializers import (CertificateRequestSerializer, CertificateApproveSerializer,
@@ -114,3 +114,21 @@ class CertificateListUniversity(generics.ListAPIView):
         except (User.DoesNotExist, University.DoesNotExist):
             return None
         return Certificate.objects.filter(university=univeristy).filter(certified=certified)
+
+class CertificateListStudent(generics.ListAPIView):
+    serializer_class = CertificateListSerializer
+
+    def get_queryset(self):
+        username = self.request.query_params.get('student')
+        try:
+            certified = self.request.query_params.get('certified').lower() == 'true'
+        except AttributeError:
+            certified = False
+        if not username:
+            return None
+        try:
+            user = User.objects.get(username=username)
+            student = Student.objects.get(user=user)
+        except (User.DoesNotExist, Student.DoesNotExist):
+            return None
+        return Certificate.objects.filter(student=student).filter(certified=certified)

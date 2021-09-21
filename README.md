@@ -109,4 +109,18 @@
 >
 > ### Return values
 > Return a list of certificate IDs.  
-> - certificate_id: ID of the certificate
+> - certificate_id: ID of the certificate  
+
+> ## ***cert/certificate-list-student***
+> Get the list of certificate linked to a student.  
+>
+> ### Methods allowed  
+> - GET  
+>
+> ### Fields required
+> - student: username of student account.
+> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.  
+>
+> ### Return values
+> Return a list of certificate IDs.  
+> - certificate_id: ID of the certificate  
