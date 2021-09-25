@@ -158,3 +158,25 @@
 > - certified_on: Certificate generation data.
 > - certificate_link: Certificate download link.  
 > - certified: A bool value denoting if the certificate is generated or not.   
+
+> ## ***cert/certificate-details-list-university***  
+> Returns a list of certificate details of a given university.  
+>
+> ### Method allowed  
+> - POST  
+>
+> ### Fields required  
+> - university_code: username of university account.
+> - certified: A boolean value. Fetches only certified certificate numbers if set true, otherwise fetches uncertified certificate number.
+>
+> ### Return value  
+> Returns a list of json objects.
+> - certificate_id: ID of the certificate.  
+> - student: Name of the student.  
+> - university: Name of the university.  
+> - course: Name of the course completed.  
+> - grade_obtained: Grade obtained in the course.  
+> - certified_on: Certificate generation data.
+> - certificate_link: Certificate download link.  
+> - certified: A bool value denoting if the certificate is generated or not.   
+

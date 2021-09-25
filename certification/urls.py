@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (CertificateRequest, CertificateApproval, CertificateDetails,
                     CertificateListUniversity, CertificateListStudent, CertificateVerification,
-                    CertificateDetailsStudent)
+                    CertificateDetailsStudent, CertificateDetailsUniversity)
 
 urlpatterns = [
     path('certificate-request', CertificateRequest.as_view(),
@@ -18,4 +18,6 @@ urlpatterns = [
          name='certificate_verification'),
     path('certificate-details-list-student', CertificateDetailsStudent.as_view(),
          name='certificate_details_list_student'),
+    path('certificate-details-list-university', CertificateDetailsUniversity.as_view(),
+         name='certificate-details-list-university')
 ]
