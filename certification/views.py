@@ -181,3 +181,22 @@ class CertificateDetailsStudent(generics.ListAPIView):
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
         return Certificate.objects.filter(student=student).filter(certified=certified)
+
+class CertificateDetailsUniversity(generics.ListAPIView):
+    serializer_class = CertificateDetailsSerializer
+
+    def get_queryset(self):
+        university_code = self.request.query_params.get('university_code')
+        try:
+            certified = self.request.query_params.get(
+                'certified').lower() == 'true'
+        except AttributeError:
+            certified = False
+        if not university_code:
+            return None
+        try:
+            user = User.objects.get(username=university_code)
+            univeristy = University.objects.get(user=user)
+        except (User.DoesNotExist, University.DoesNotExist):
+            return None
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified)
