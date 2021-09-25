@@ -16,7 +16,7 @@
 >  
 > ### Return values
 > - message: Error message if any exception is raised. Success message if the account is created suucessfully. 
-> - result: 1, if account created successfully, 0 otherwise.   
+> - result: 1, if account created successfully, otherwise 0.   
 
 > ## ***/auth/login/<user_type>***  
 > Login into user account.  
@@ -34,7 +34,7 @@
 >  
 > ### Return values
 > - token: User token if authentication was successful, error message if authentication failed.
-> - result: 1, if the authentication was successful, 0 otherwise.  
+> - result: 1, if the authentication was successful, otherwise 0.  
 
 > ## ***/auth/logout***  
 > Logout from user account.  
@@ -58,11 +58,11 @@
 > - token: Authentication token.  
 > - university: University code, same as university username.  
 > - course: Name of the course completed.  
-> grade_obtained: Grade obtained in the course.  
+> - grade_obtained: Grade obtained in the course.  
 >
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
-> - result: 1, if the request was successful, 0 otherwise.  
+> - result: 1, if the request was successful, otherwise 0.  
 
 > ## ***/cert/certificate-approve***  
 > Universities generates certificates using this endpoint.
@@ -70,12 +70,12 @@
 > ### Methods allowed  
 > - POST
 > ### Fieds required
-> - certificate_id: ID of the certification request make by the student.   
+> - certificate_id: ID of the certification request made by the student.   
 > - token: University authentication token.  
 >
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
-> - result: 1, if the request was successful, 0 otherwise.  
+> - result: 1, if the request was successful, otherwise 0.  
 
 > ## ***/cert/certificate-details***  
 > Fetch certificate details.  
@@ -98,14 +98,14 @@
 > - certified: A bool value denoting if the certificate is generated or not.  
 
 > ## ***cert/certificate-list-university***
-> Get the list of certificate maintained my an university.  
+> Get the list of certificate maintained my a university.  
 >
 > ### Methods allowed  
 > - GET  
 >
 > ### Fields required
 > - university_code: username of univeristy account.
-> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.  
+> - certified: A boolean value. Fetches only certified certificate numbers if set true, otherwise fetches uncertified certificate number.  
 >
 > ### Return values
 > Return a list of certificate IDs.  
@@ -119,34 +119,34 @@
 >
 > ### Fields required
 > - student: username of student account.
-> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.  
+> - certified: A boolean value. Fetches only certified certificate numbers if set true, otherwise fetches uncertified certificate number.  
 >
 > ### Return values
 > Return a list of certificate IDs.  
-> - certificate_id: ID of the certificate  
+> - certificate_id: ID of the certificates  
 
 > ## ***cert/certificate-verification***  
 > Upload a certificate to check the integrity of the certificate.
-> ### Method allowed
+> ### Methods allowed
 > - POST
 >
 > ### Fields required  
-> certificate: Certificate pdf file.
-> certificate_id: ID of the certificate uploaded.  
+> - certificate: Certificate pdf file.
+> - certificate_id: ID of the certificate uploaded.  
 >
 > ### Return value
 > - message: Message denoting if the certificate is valid or not.  
-> - result: 1, if the request was successful, 0 otherwise.  
+> - result: 1, if the request was successful, otherwise 0.  
 
 > ## ***cert/certificate-details-list-student***  
 > Returns a list of certificate details of a given student.  
 >
-> ### Method allowed  
+> ### Methods allowed  
 > - POST  
 >
 > ### Fields required  
 > - student: username of student account.
-> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.
+> - certified: A boolean value. Fetches only certified certificate numbers if set true, otherwise fetches uncertified certificate number.
 >
 > ### Return value  
 > Returns a list of json objects.
@@ -162,7 +162,7 @@
 > ## ***cert/certificate-details-list-university***  
 > Returns a list of certificate details of a given university.  
 >
-> ### Method allowed  
+> ### Methods allowed  
 > - POST  
 >
 > ### Fields required  
