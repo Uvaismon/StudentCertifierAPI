@@ -162,3 +162,22 @@ class CertificateVerification(APIView):
             'message': message,
             'result': result
         })
+
+class CertificateDetailsStudent(generics.ListAPIView):
+    serializer_class = CertificateDetailsSerializer
+
+    def get_queryset(self):
+        username = self.request.query_params.get('student')
+        try:
+            certified = self.request.query_params.get(
+                'certified').lower() == 'true'
+        except AttributeError:
+            certified = False
+        if not username:
+            return None
+        try:
+            user = User.objects.get(username=username)
+            student = Student.objects.get(user=user)
+        except (User.DoesNotExist, Student.DoesNotExist):
+            return None
+        return Certificate.objects.filter(student=student).filter(certified=certified)

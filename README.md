@@ -137,3 +137,24 @@
 > ### Return value
 > - message: Message denoting if the certificate is valid or not.  
 > - result: 1, if the request was successful, 0 otherwise.  
+
+> ## ***cert/certificate-details-list-student***  
+> Returns a list of certificate details of a given student.  
+>
+> ### Method allowed  
+> - POST  
+>
+> ### Fields required  
+> - student: username of student account.
+> - certified: A boolean value. Fetched only certified certificate numbers if set true, otherwise fetched uncertified certificate number.
+>
+> ### Return value  
+> Returns a list of json objects.
+> - certificate_id: ID of the certificate.  
+> - student: Name of the student.  
+> - university: Name of the university.  
+> - course: Name of the course completed.  
+> - grade_obtained: Grade obtained in the course.  
+> - certified_on: Certificate generation data.
+> - certificate_link: Certificate download link.  
+> - certified: A bool value denoting if the certificate is generated or not.   
