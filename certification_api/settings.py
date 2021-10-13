@@ -16,6 +16,7 @@ from decouple import config
 import pyrebase
 import django_heroku
 import os
+import sqlite3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 
     'authenticate',
     'certification',
+    'scaffolding',
 ]
 
 MIDDLEWARE = [
@@ -95,6 +97,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+university_database_cursor = sqlite3.connect('university_database.db').cursor()
 
 
 # Password validation
