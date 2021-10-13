@@ -21,6 +21,9 @@ class ContractHelper:
             'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS')),
             'from': config('ETHEREUM_ACCOUNT_ADDRESS')
         })
+
+        print(self.predictCost())
+        
         signed_transaction = self.w3.eth.account.signTransaction(
             transaction, config('ETHEREUM_ACCOUNT_PRIVATE_KEY'))
         transaction_hash = self.w3.eth.sendRawTransaction(
@@ -33,3 +36,12 @@ class ContractHelper:
 
     def compare_hash(self, certificate_id, file_hash):
         return file_hash == self.get_hash(certificate_id)
+
+    def predictCost(self):
+        dummy_certificate_id = 0
+        dummy_certificate_hash = 'd2607ab3cd54242c1ad78fa35052ba7c8aafd4f4781503f2274c31063a85f560'
+        transaction = self.contract.functions.add_hash(dummy_certificate_id, dummy_certificate_hash).buildTransaction({
+            'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS')),
+            'from': config('ETHEREUM_ACCOUNT_ADDRESS')
+        })
+        return self.w3.eth.estimateGas(transaction)
