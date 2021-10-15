@@ -29,9 +29,9 @@ class CertificateRequest(APIView):
         user = serializer.authenticate(token=serializer.data['token'])
         if not user:
             message = 'Authentication failed'
-        elif not verify_student(user.user.username, user.user.email, serializer.data['university']):
-            message = 'Student does not belong to the mentioned univeristy'
-            result = 2
+        # elif not verify_student(user.user.username, user.user.email, serializer.data['university']):
+        #     message = 'Student does not belong to the mentioned univeristy'
+        #     result = 2
         else:
             certificate_id = serializer.request(
                 validated_data=serializer.data, user=user)

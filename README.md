@@ -62,7 +62,7 @@
 >
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
-> - result: 1, if the request was successful, otherwise 0.  
+> - result: 1, if the request was successful, 2 if the user does not belong to the university, 0 if other error occured.  
 
 > ## ***/cert/certificate-approve***  
 > Universities generates certificates using this endpoint.
@@ -180,3 +180,14 @@
 > - certificate_link: Certificate download link.  
 > - certified: A bool value denoting if the certificate is generated or not.   
 
+> ## ***/cert/estimate-fee***  
+> Estimate the transaction fee.  
+> 
+> ### Methods allowed  
+> - GET  
+> 
+> ### Fields required  
+> none 
+>  
+> ### Return values  
+> - fee: Estimated fee of the transaction in US dollars.
