@@ -23,8 +23,6 @@ class ContractHelper:
             'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS')),
             'from': config('ETHEREUM_ACCOUNT_ADDRESS')
         })
-
-        print(self.predictCost())
         
         signed_transaction = self.w3.eth.account.signTransaction(
             transaction, config('ETHEREUM_ACCOUNT_PRIVATE_KEY'))
@@ -52,10 +50,6 @@ class ContractHelper:
             'from': config('ETHEREUM_ACCOUNT_ADDRESS')
         })
         gas_required = self.w3.eth.estimateGas(transaction)
-        print(f'Estimated gas {gas_required}')
-        print(f'Gas price {gas_price}')
-        print(f'Ether price {ether_price}')
-        print(f'Ether {gas_required * gas_price}')
         transaction_fee = gas_required * gas_price * ether_price
         return transaction_fee
 
