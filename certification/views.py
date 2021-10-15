@@ -205,3 +205,12 @@ class CertificateDetailsUniversity(generics.ListAPIView):
         except (User.DoesNotExist, University.DoesNotExist):
             return None
         return Certificate.objects.filter(university=univeristy).filter(certified=certified)
+
+class EstimateFee(APIView):
+
+    def get(self, request):
+        cost = contract_helper.estimate_fee()
+        cost = round(cost, 2)
+        return Response({
+            'fee': cost 
+        })
