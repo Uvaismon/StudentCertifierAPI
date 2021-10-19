@@ -1,6 +1,6 @@
 from re import A
 from authenticate.models import Student, University
-from rest_framework import generics
+from rest_framework import generics, serializers
 from rest_framework.views import APIView, Response
 
 from certification.helper_functions.student_helper import verify_student
@@ -278,3 +278,35 @@ class CertificateLinkDeprecationMessage(APIView):
 
     def get(self, request):
         return self.post(request)
+
+class RejectCertificate(APIView):
+    serializer_class = CertificateApproveSerializer
+
+    def post(self, request):
+        result = 0
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        user = serializer.authenticate(token=serializer.data['token'])
+        if not user:
+            message = 'Authentication failed'
+        else:
+            certificate = serializer.is_authorized(
+                serializer.data['certificate_id'], user
+            )
+            if not certificate:
+                message = 'Authorization failed'
+            else:
+                certificate.rejected = True
+                result = 1
+                message = 'Certificate rejected successfully'
+
+                course_details = CourseDetails.objects.get(student_id=certificate.studentId)
+                course_details.status = COURSE_STATUS[1]
+                course_details.save()
+
+        return Response({
+            'result': result,
+            'message': message
+        })
+        

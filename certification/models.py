@@ -14,3 +14,4 @@ class Certificate(models.Model):
     certified_on = models.DateField(null=True)
     certificate_link = models.CharField(max_length=128, null=True)
     certified = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
