@@ -212,3 +212,17 @@
 >   - 5, if already requested for the certificate.  
 >   - 6, if already certified for the course.  
 >   - 0, if other error occured.
+
+> ## ***/cert/certificate-reject***  
+> Admin reject certificate request fromt students.  
+>
+> ### Methods allowed
+> - POST
+>
+> ### Fields required  
+> - token: Token of the university account.  
+> - certificate_id: ID of the certificate request to be rejected.  
+>
+> ### Return values
+> - result: 1, if the rejection was successful, 0 otherwise.
+> - message:  Error message if any, success message if the request was successful.  
