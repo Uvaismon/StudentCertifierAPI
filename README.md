@@ -142,7 +142,7 @@
 > Returns a list of certificate details of a given student.  
 >
 > ### Methods allowed  
-> - POST  
+> - GET  
 >
 > ### Fields required  
 > - student: username of student account.
@@ -163,7 +163,7 @@
 > Returns a list of certificate details of a given university.  
 >
 > ### Methods allowed  
-> - POST  
+> - GET  
 >
 > ### Fields required  
 > - university_code: username of university account.
@@ -226,3 +226,23 @@
 > ### Return values
 > - result: 1, if the rejection was successful, 0 otherwise.
 > - message:  Error message if any, success message if the request was successful.  
+
+> ## ***cert/certificate-rejected***  
+> Returns a list of certificate details of a given student rejected by the university.  
+>
+> ### Methods allowed  
+> - GET  
+>
+> ### Fields required  
+> - student: username of student account.
+>
+> ### Return value  
+> Returns a list of json objects.
+> - certificate_id: ID of the certificate.  
+> - student: Name of the student.  
+> - university: Name of the university.  
+> - course: Name of the course completed.  
+> - grade_obtained: Grade obtained in the course.  
+> - certified_on: Certificate generation data.
+> - certificate_link: Certificate download link.  
+> - certified: A bool value denoting if the certificate is generated or not.  

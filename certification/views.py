@@ -130,7 +130,7 @@ class CertificateListUniversity(generics.ListAPIView):
             univeristy = University.objects.get(user=user)
         except (User.DoesNotExist, University.DoesNotExist):
             return None
-        return Certificate.objects.filter(university=univeristy).filter(certified=certified)
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False)
 
 
 class CertificateListStudent(generics.ListAPIView):
@@ -150,7 +150,7 @@ class CertificateListStudent(generics.ListAPIView):
             student = Student.objects.get(user=user)
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
-        return Certificate.objects.filter(student=student).filter(certified=certified)
+        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False)
 
 
 class CertificateVerification(APIView):
@@ -194,7 +194,7 @@ class CertificateDetailsStudent(generics.ListAPIView):
             student = Student.objects.get(user=user)
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
-        return Certificate.objects.filter(student=student).filter(certified=certified)
+        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False)
 
 class CertificateDetailsUniversity(generics.ListAPIView):
     serializer_class = CertificateDetailsSerializer
@@ -213,7 +213,7 @@ class CertificateDetailsUniversity(generics.ListAPIView):
             univeristy = University.objects.get(user=user)
         except (User.DoesNotExist, University.DoesNotExist):
             return None
-        return Certificate.objects.filter(university=univeristy).filter(certified=certified)
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False)
 
 class EstimateFee(APIView):
 
@@ -298,6 +298,7 @@ class RejectCertificate(APIView):
                 message = 'Authorization failed'
             else:
                 certificate.rejected = True
+                certificate.save()
                 result = 1
                 message = 'Certificate rejected successfully'
 
@@ -309,4 +310,17 @@ class RejectCertificate(APIView):
             'result': result,
             'message': message
         })
-        
+
+class CertificateRejectionDetails(generics.ListAPIView):
+    serializer_class = CertificateDetailsSerializer
+
+    def get_queryset(self):
+        username = self.request.query_params.get('student')
+        if not username:
+            return None
+        try:
+            user = User.objects.get(username=username)
+            student = Student.objects.get(user=user)
+        except (User.DoesNotExist, Student.DoesNotExist):
+            return None
+        return Certificate.objects.filter(student=student).filter(rejected=True)
