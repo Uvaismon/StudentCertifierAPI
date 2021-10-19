@@ -1,14 +1,17 @@
+from logging import captureWarnings
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from authenticate.models import Student, University
 from .models import Certificate
 from django.contrib.auth.models import User
+from scaffolding.models import CourseDetails, COURSE_STATUS
 
 class CertificateRequestSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=64)
     university = serializers.CharField(max_length=64)
     course = serializers.CharField(max_length=32)
-    grade_obtained = serializers.CharField(max_length=3)
+    grade_obtained = serializers.CharField(max_length=32)
+    student_id = serializers.CharField(max_length=32)
 
     def authenticate(self, token):
         try:
@@ -28,9 +31,15 @@ class CertificateRequestSerializer(serializers.Serializer):
             student = user,
             university = university,
             course = validated_data['course'],
-            grade_obtained = validated_data['grade_obtained']
+            grade_obtained = validated_data['grade_obtained'],
+            studentId = validated_data['student_id']
         )
         certificate.save()
+
+        course_details = CourseDetails.objects.get(student_id=validated_data['student_id'])
+        course_details.status = COURSE_STATUS[2]
+        course_details.save()
+
         return certificate.certificate_id
 
 class CertificateApproveSerializer(serializers.Serializer):
@@ -70,3 +79,7 @@ class CertificateListSerializer(serializers.ModelSerializer):
 class CertificateVerificationSerializer(serializers.Serializer):
     certificate = serializers.FileField()
     certificate_id = serializers.IntegerField()
+
+class CertificateRequestStudentSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=64)
+    student_id = serializers.CharField(max_length=32)

@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import (CertificateRequest, CertificateApproval, CertificateDetails,
+from .views import (CertificateApproval, CertificateDetails,
                     CertificateListUniversity, CertificateListStudent, CertificateVerification,
-                    CertificateDetailsStudent, CertificateDetailsUniversity, EstimateFee)
+                    CertificateDetailsStudent, CertificateDetailsUniversity, EstimateFee,
+                    CertificateRequestStudent, CertificateLinkDeprecationMessage)
 
 urlpatterns = [
-    path('certificate-request', CertificateRequest.as_view(),
+    path('certificate-request', CertificateLinkDeprecationMessage.as_view(),
          name='certificate_request'),
     path('certificate-approve', CertificateApproval.as_view(),
          name='certificate_approve'),
@@ -20,5 +21,7 @@ urlpatterns = [
          name='certificate_details_list_student'),
     path('certificate-details-list-university', CertificateDetailsUniversity.as_view(),
          name='certificate-details-list-university'),
-    path('estimate-fee', EstimateFee.as_view(), name='estimate_fee')
+    path('estimate-fee', EstimateFee.as_view(), name='estimate_fee'),
+    path('certificate-request-student',
+         CertificateRequestStudent.as_view(), name='certificate_request_student'),
 ]

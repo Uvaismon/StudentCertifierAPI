@@ -16,7 +16,6 @@ from decouple import config
 import pyrebase
 import django_heroku
 import os
-import sqlite3
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -166,5 +165,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 firebase_storage = firebase.storage()
+
+UNIVERSITY_CODE = 'NearEastUniversity'
 
 django_heroku.settings(locals())

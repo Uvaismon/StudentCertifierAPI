@@ -48,7 +48,7 @@
 > ### Return values
 > - None 
 
-> ## ***/cert/certificate-request***  
+> ## ***/cert/certificate-request***  (deprecated)
 > Students request for certificate.  
 >
 > ### Methods allowed  
@@ -62,7 +62,7 @@
 >
 > ### Return values
 > - message: Error message if any, success message if the request was successful.  
-> - result: 1, if the request was successful, 2 if the user does not belong to the university, 0 if other error occured.  
+> - result: 1, if the request was successful, 2 if the user does not belong to the university, 3 if the user is not enrolled in any course, 0 if other error occured.  
 
 > ## ***/cert/certificate-approve***  
 > Universities generates certificates using this endpoint.
@@ -191,3 +191,24 @@
 >  
 > ### Return values  
 > - fee: Estimated fee of the transaction in US dollars.
+
+> ## ***/cert/certificate-request-student***  
+> Students request for certificate.  
+>
+> ### Methods allowed  
+> - POST  
+>
+> ### Fields required  
+> - token: Authentication token.  
+> - student_id: Student ID as per university database.  
+>
+> ### Return values
+> - message: Error message if any, success message if the request was successful.  
+> - result: 
+>   - 1, if the request was successful.  
+>   - 2, if the user does not belong to the university.  
+>   - 3, if the user is not enrolled in any course.   
+>   - 4, if the course is incomplete.  
+>   - 5, if already requested for the certificate.  
+>   - 6, if already certified for the course.  
+>   - 0, if other error occured.

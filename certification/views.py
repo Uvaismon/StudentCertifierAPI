@@ -1,3 +1,4 @@
+from re import A
 from authenticate.models import Student, University
 from rest_framework import generics
 from rest_framework.views import APIView, Response
@@ -5,15 +6,17 @@ from rest_framework.views import APIView, Response
 from certification.helper_functions.student_helper import verify_student
 from .serializers import (CertificateRequestSerializer, CertificateApproveSerializer,
                           CertificateDetailsSerializer, CertificateListSerializer,
-                          CertificateVerificationSerializer)
+                          CertificateVerificationSerializer, CertificateRequestStudentSerializer)
 from .helper_functions.pdf_helper import from_html
 from .helper_functions.hash_helper import hash_from_file, from_file_object
 from datetime import date
-from certification_api.settings import contract_helper, firebase_storage
+from certification_api.settings import contract_helper, firebase_storage, UNIVERSITY_CODE
 import os
 from .helper_functions.email_helper import send_mail
 from .models import Certificate
 from django.contrib.auth.models import User
+from django.urls import reverse
+from scaffolding.models import CourseDetails, COURSE_STATUS
 
 # Create your views here.
 
@@ -23,6 +26,7 @@ class CertificateRequest(APIView):
     http_method_names = ['post']
 
     def post(self, request):
+        print(request.data)
         result = 0
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
@@ -88,6 +92,11 @@ class CertificateApproval(APIView):
                 os.remove(certificate_filename)
                 result = 1
                 message = 'Certificate generated successfully'
+
+                course_details = CourseDetails.objects.get(student_id=certificate.studentId)
+                course_details.status = COURSE_STATUS[3]
+                course_details.save()
+
         return Response({
             'message': message,
             'result': result
@@ -214,3 +223,58 @@ class EstimateFee(APIView):
         return Response({
             'fee': cost 
         })
+
+class CertificateRequestStudent(APIView):
+    serializer_class = CertificateRequestStudentSerializer
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        course_details = CourseDetails.objects.filter(student_id=serializer.data['student_id'])
+
+        if not course_details:
+            return Response({
+                'result': 3,
+                'message': 'Student is not enrolled into any course'
+            })
+        
+        course_details = course_details[0]
+
+        if course_details.status == COURSE_STATUS[0]:
+            return Response({
+                'result': 4,
+                'message': 'Course incomplete',
+            })
+
+        if course_details.status == COURSE_STATUS[2]:
+            return Response({
+                'result': 5,
+                'message': 'Already requested for the certificate'
+            })
+        
+        if course_details.status == COURSE_STATUS[3]:
+            return Response({
+                'result': 6,
+                'message': 'Already certified for the currently enrolled course'
+            })
+
+        _mutability = request.data._mutable
+        request.data._mutable = True
+
+        request.data['university'] = UNIVERSITY_CODE
+        request.data['course'] = course_details.degree
+        request.data['grade_obtained'] = course_details.grade
+
+        request.data._mutable = _mutability
+
+        certificate_view = CertificateRequest.as_view()
+        return certificate_view(request._request, *args, **kwargs)
+
+class CertificateLinkDeprecationMessage(APIView):
+
+    def post(self, request):
+        return Response(f'This link is deprecated. Please use the new link {reverse("certificate_request_student")}')
+
+    def get(self, request):
+        return self.post(request)
