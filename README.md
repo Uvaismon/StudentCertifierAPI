@@ -192,7 +192,7 @@
 > ### Return values  
 > - fee: Estimated fee of the transaction in US dollars.
 
-> ## ***/cert/certificate-request-student***  
+> ## ***/cert/certificate-request-student*** *(new)*  
 > Students request for certificate.  
 >
 > ### Methods allowed  
@@ -213,7 +213,7 @@
 >   - 6, if already certified for the course.  
 >   - 0, if other error occured.
 
-> ## ***/cert/certificate-reject***  
+> ## ***/cert/certificate-reject*** *(new)*  
 > Admin reject certificate request fromt students.  
 >
 > ### Methods allowed
@@ -227,7 +227,7 @@
 > - result: 1, if the rejection was successful, 0 otherwise.
 > - message:  Error message if any, success message if the request was successful.  
 
-> ## ***cert/certificate-rejected***  
+> ## ***cert/certificate-rejected*** *(new)*  
 > Returns a list of certificate details of a given student rejected by the university.  
 >
 > ### Methods allowed  
