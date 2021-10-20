@@ -388,3 +388,10 @@ class PendingPaymentDetails(generics.ListAPIView):
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
         return Certificate.objects.filter(student=student).filter(payment_status=False)
+
+class EthereumAccountAddress(APIView):
+
+    def get(self, request):
+        return Response({
+            'account': config('ETHEREUM_ACCOUNT_ADDRESS')
+        })

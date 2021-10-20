@@ -299,3 +299,11 @@
 > ### Return value
 > Returns a list of json objects of certificate details.
 
+> ## ***cert/ethereum-account-address*** *(new)*
+> Returns the app's ethereum address for payment by the student.  
+>
+> ### Methods allowed  
+> - GET
+> 
+> ### Return value  
+> - account: Ethereum account address of the university.  
