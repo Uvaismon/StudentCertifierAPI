@@ -46,17 +46,21 @@ class ContractHelper:
         ETHER_PRICE_API = 'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD'
 
         ether_price = requests.get(ETHER_PRICE_API).json()['USD']
-        gas_price = self.estimate_cost() / (10**18)
 
-        dummy_certificate_id = 0
+        ether_required = self.estimate_fee_wei() / (10 ** 18)
+        transaction_fee = ether_required * ether_price
+        return transaction_fee
+
+    def estimate_fee_wei(self):
+        dummy_certificate_id = 115792089237316195423570985008687907853269984665640564039457584007913129639935
         dummy_certificate_hash = 'd2607ab3cd54242c1ad78fa35052ba7c8aafd4f4781503f2274c31063a85f560'
         transaction = self.contract.functions.add_hash(dummy_certificate_id, dummy_certificate_hash).buildTransaction({
             'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS')),
             'from': config('ETHEREUM_ACCOUNT_ADDRESS')
         })
+        gas_price = self.estimate_cost()
         gas_required = self.w3.eth.estimateGas(transaction)
-        transaction_fee = gas_required * gas_price * ether_price
-        return transaction_fee
+        return gas_required * gas_price
 
     def estimate_cost(self):
         self.w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)

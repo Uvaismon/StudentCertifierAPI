@@ -218,10 +218,13 @@ class CertificateDetailsUniversity(generics.ListAPIView):
 class EstimateFee(APIView):
 
     def get(self, request):
-        cost = contract_helper.estimate_fee()
-        cost = round(cost, 2)
+        usd = contract_helper.estimate_fee()
+        usd = round(usd, 2)
+
+        wei = contract_helper.estimate_fee_wei()
         return Response({
-            'fee': cost 
+            'USD': usd,
+            'WEI': wei
         })
 
 class CertificateRequestStudent(APIView):

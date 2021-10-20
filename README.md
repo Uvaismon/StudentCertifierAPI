@@ -190,7 +190,8 @@
 > none 
 >  
 > ### Return values  
-> - fee: Estimated fee of the transaction in US dollars.
+> - USD: Estimated fee of the transaction in US dollars.
+> - WEI: Estimated fee of the transaction in Wei.
 
 > ## ***/cert/certificate-request-student*** *(new)*  
 > Students request for certificate.  
