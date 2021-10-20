@@ -286,3 +286,16 @@
 > - payment_status: A boolean value, True if the payment is completed by the student, else False.  
 > - estimated_fee: Estimated gas fee for the certificate generation.  
 > - payment_details: Reference details indicating the payments made by the student.
+
+> ## ***cert/certificate-rejected*** *(new)*
+> Returns a list of student certificates for which the student has not made any payments yet.
+>
+> ### Methods allowed  
+> - GET
+>
+> ### Fields required  
+> - student: Username of the student.  
+> 
+> ### Return value
+> Returns a list of json objects of certificate details.
+
