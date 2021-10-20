@@ -14,4 +14,4 @@ class CourseDetails(models.Model):
     student_id = models.CharField(max_length=32, primary_key=True)
     degree = models.CharField(max_length=32)
     grade = models.CharField(max_length=32)
-    status = models.CharField(max_length=32, default=COURSE_STATUS[0])
+    status = models.CharField(max_length=32, default=COURSE_STATUS[1])
