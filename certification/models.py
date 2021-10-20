@@ -15,3 +15,6 @@ class Certificate(models.Model):
     certificate_link = models.CharField(max_length=128, null=True)
     certified = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
+    payment_status = models.BooleanField(default=False)
+    estimated_fee = models.IntegerField(null=True)
+    payment_details = models.CharField(max_length=128, null=True)

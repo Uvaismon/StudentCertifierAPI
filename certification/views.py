@@ -1,4 +1,6 @@
 from re import A
+
+from rest_framework.utils.serializer_helpers import ReturnList
 from authenticate.models import Student, University
 from rest_framework import generics, serializers
 from rest_framework.views import APIView, Response
@@ -6,7 +8,8 @@ from rest_framework.views import APIView, Response
 from certification.helper_functions.student_helper import verify_student
 from .serializers import (CertificateRequestSerializer, CertificateApproveSerializer,
                           CertificateDetailsSerializer, CertificateListSerializer,
-                          CertificateVerificationSerializer, CertificateRequestStudentSerializer)
+                          CertificateVerificationSerializer, CertificateRequestStudentSerializer,
+                          ConfirmEtherPaymentSerializer)
 from .helper_functions.pdf_helper import from_html
 from .helper_functions.hash_helper import hash_from_file, from_file_object
 from datetime import date
@@ -17,6 +20,7 @@ from .models import Certificate
 from django.contrib.auth.models import User
 from django.urls import reverse
 from scaffolding.models import CourseDetails, COURSE_STATUS
+from decouple import config
 
 # Create your views here.
 
@@ -93,7 +97,8 @@ class CertificateApproval(APIView):
                 result = 1
                 message = 'Certificate generated successfully'
 
-                course_details = CourseDetails.objects.get(student_id=certificate.studentId)
+                course_details = CourseDetails.objects.get(
+                    student_id=certificate.studentId)
                 course_details.status = COURSE_STATUS[3]
                 course_details.save()
 
@@ -130,7 +135,7 @@ class CertificateListUniversity(generics.ListAPIView):
             univeristy = University.objects.get(user=user)
         except (User.DoesNotExist, University.DoesNotExist):
             return None
-        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False)
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False).filter(payment_status=True)
 
 
 class CertificateListStudent(generics.ListAPIView):
@@ -150,7 +155,7 @@ class CertificateListStudent(generics.ListAPIView):
             student = Student.objects.get(user=user)
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
-        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False)
+        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False).filter(payment_status=True)
 
 
 class CertificateVerification(APIView):
@@ -162,20 +167,21 @@ class CertificateVerification(APIView):
             certificate_id = int(request.POST.get('certificate_id', None))
             if not file or not certificate_id:
                 raise(ValueError)
-            file_hash=from_file_object(file)
-            validity=contract_helper.compare_hash(certificate_id, file_hash)
+            file_hash = from_file_object(file)
+            validity = contract_helper.compare_hash(certificate_id, file_hash)
             if validity:
-                message='The certificate is valid'
+                message = 'The certificate is valid'
             else:
-                message='The certificate is invalid'
-            result=1
+                message = 'The certificate is invalid'
+            result = 1
         except ValueError:
-            result=0
-            message='Invalid data recieved'
+            result = 0
+            message = 'Invalid data recieved'
         return Response({
             'message': message,
             'result': result
         })
+
 
 class CertificateDetailsStudent(generics.ListAPIView):
     serializer_class = CertificateDetailsSerializer
@@ -194,7 +200,8 @@ class CertificateDetailsStudent(generics.ListAPIView):
             student = Student.objects.get(user=user)
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
-        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False)
+        return Certificate.objects.filter(student=student).filter(certified=certified).filter(rejected=False).filter(payment_status=True)
+
 
 class CertificateDetailsUniversity(generics.ListAPIView):
     serializer_class = CertificateDetailsSerializer
@@ -213,7 +220,8 @@ class CertificateDetailsUniversity(generics.ListAPIView):
             univeristy = University.objects.get(user=user)
         except (User.DoesNotExist, University.DoesNotExist):
             return None
-        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False)
+        return Certificate.objects.filter(university=univeristy).filter(certified=certified).filter(rejected=False).filter(payment_status=True)
+
 
 class EstimateFee(APIView):
 
@@ -222,10 +230,13 @@ class EstimateFee(APIView):
         usd = round(usd, 2)
 
         wei = contract_helper.estimate_fee_wei()
+        ether = f'{wei / 10 ** 18 : .18f}'
         return Response({
             'USD': usd,
-            'WEI': wei
+            'WEI': wei,
+            'ETHER': ether
         })
+
 
 class CertificateRequestStudent(APIView):
     serializer_class = CertificateRequestStudentSerializer
@@ -234,14 +245,15 @@ class CertificateRequestStudent(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
-        course_details = CourseDetails.objects.filter(student_id=serializer.data['student_id'])
+        course_details = CourseDetails.objects.filter(
+            student_id=serializer.data['student_id'])
 
         if not course_details:
             return Response({
                 'result': 3,
                 'message': 'Student is not enrolled into any course'
             })
-        
+
         course_details = course_details[0]
 
         if course_details.status == COURSE_STATUS[0]:
@@ -255,7 +267,7 @@ class CertificateRequestStudent(APIView):
                 'result': 5,
                 'message': 'Already requested for the certificate'
             })
-        
+
         if course_details.status == COURSE_STATUS[3]:
             return Response({
                 'result': 6,
@@ -274,6 +286,7 @@ class CertificateRequestStudent(APIView):
         certificate_view = CertificateRequest.as_view()
         return certificate_view(request._request, *args, **kwargs)
 
+
 class CertificateLinkDeprecationMessage(APIView):
 
     def post(self, request):
@@ -281,6 +294,7 @@ class CertificateLinkDeprecationMessage(APIView):
 
     def get(self, request):
         return self.post(request)
+
 
 class RejectCertificate(APIView):
     serializer_class = CertificateApproveSerializer
@@ -305,7 +319,8 @@ class RejectCertificate(APIView):
                 result = 1
                 message = 'Certificate rejected successfully'
 
-                course_details = CourseDetails.objects.get(student_id=certificate.studentId)
+                course_details = CourseDetails.objects.get(
+                    student_id=certificate.studentId)
                 course_details.status = COURSE_STATUS[1]
                 course_details.save()
 
@@ -313,6 +328,7 @@ class RejectCertificate(APIView):
             'result': result,
             'message': message
         })
+
 
 class CertificateRejectionDetails(generics.ListAPIView):
     serializer_class = CertificateDetailsSerializer
@@ -327,3 +343,34 @@ class CertificateRejectionDetails(generics.ListAPIView):
         except (User.DoesNotExist, Student.DoesNotExist):
             return None
         return Certificate.objects.filter(student=student).filter(rejected=True)
+
+
+class ConfirmEtherPayment(APIView):
+    serializer_class = ConfirmEtherPaymentSerializer
+
+    def post(self, request):
+        result = 0
+        message = 'Confirmation failed'
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        try:
+            certificate = Certificate.objects.get(
+                certificate_id=serializer.data['certificate_id'])
+            transaction_details = contract_helper.get_transaction_details(
+                serializer.data['hash'])
+            to = transaction_details['to']
+            value = transaction_details['value']
+            if (value >= certificate.estimated_fee and to == config('ETHEREUM_ACCOUNT_ADDRESS')
+                    and Certificate.objects.filter(payment_details=serializer.data['hash']).count() == 0):
+                result = 1
+                certificate.payment_details = serializer.data['hash']
+                certificate.payment_status = True
+                certificate.save()
+                message = 'Payment confirmed'
+
+        except Certificate.DoesNotExist:
+            message = 'certificate does not exist.'
+        return Response({
+            'result': result,
+            'message': message
+        })

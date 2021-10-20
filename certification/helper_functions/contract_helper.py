@@ -65,3 +65,7 @@ class ContractHelper:
     def estimate_cost(self):
         self.w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
         return self.w3.eth.generate_gas_price()
+
+    def get_transaction_details(self, transaction_hash):
+        return self.w3.eth.get_transaction(transaction_hash)
+        

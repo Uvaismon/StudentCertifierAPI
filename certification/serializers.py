@@ -5,6 +5,7 @@ from authenticate.models import Student, University
 from .models import Certificate
 from django.contrib.auth.models import User
 from scaffolding.models import CourseDetails, COURSE_STATUS
+from certification_api.settings import contract_helper
 
 class CertificateRequestSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=64)
@@ -32,7 +33,8 @@ class CertificateRequestSerializer(serializers.Serializer):
             university = university,
             course = validated_data['course'],
             grade_obtained = validated_data['grade_obtained'],
-            studentId = validated_data['student_id']
+            studentId = validated_data['student_id'],
+            estimated_fee = contract_helper.estimate_fee_wei()
         )
         certificate.save()
 
@@ -83,3 +85,7 @@ class CertificateVerificationSerializer(serializers.Serializer):
 class CertificateRequestStudentSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=64)
     student_id = serializers.CharField(max_length=32)
+
+class ConfirmEtherPaymentSerializer(serializers.Serializer):
+    hash = serializers.CharField(max_length=128)
+    certificate_id = serializers.IntegerField()

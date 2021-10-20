@@ -247,3 +247,17 @@
 > - certified_on: Certificate generation data.
 > - certificate_link: Certificate download link.  
 > - certified: A bool value denoting if the certificate is generated or not.  
+
+> ## ***cert/confirm-ether-payment*** *(new)*  
+> Confirms certification payment made by students.
+>
+> ### Methods allowed
+> - POST  
+>
+> ### Fields required  
+> - hash: Transaction hash refering to the payment made by the student.  
+> certificate_id: ID of the certificate for which the student is making the payment.  
+>
+> ### return value  
+> - result: 1, if the transaction was successful, 0 otherwise.  
+> - message: Respective success or error message.  
