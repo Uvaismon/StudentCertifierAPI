@@ -261,3 +261,28 @@
 > ### return value  
 > - result: 1, if the transaction was successful, 0 otherwise.  
 > - message: Respective success or error message.  
+
+> ## ***cert/certificate-pending*** *(new)*
+> Returns a list of student certificates for which the student has not made any payments yet.
+>
+> ### Methods allowed  
+> - GET
+>
+> ### Fields required  
+> - student: Username of the student.  
+> 
+> ### Return value
+> Returns a list of json objects.
+> - certificate_id: ID of the certificate.  
+> - student: Name of the student.  
+> - university: Name of the university.  
+> - course: Name of the course completed.  
+> - grade_obtained: Grade obtained in the course.  
+> - certified_on: Certificate generation data.
+> - certificate_link: Certificate download link.  
+> - certified: A bool value denoting if the certificate is generated or not
+> - studentId: ID of the student as per university database.  
+> - rejected: A boolean value, True if the certificate is rejected by the university, else False.
+> - payment_status: A boolean value, True if the payment is completed by the student, else False.  
+> - estimated_fee: Estimated gas fee for the certificate generation.  
+> - payment_details: Reference details indicating the payments made by the student.

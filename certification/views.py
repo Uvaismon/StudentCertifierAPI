@@ -374,3 +374,17 @@ class ConfirmEtherPayment(APIView):
             'result': result,
             'message': message
         })
+
+class PendingPaymentDetails(generics.ListAPIView):
+    serializer_class = CertificateDetailsSerializer
+
+    def get_queryset(self):
+        username = self.request.query_params.get('student')
+        if not username:
+            return None
+        try:
+            user = User.objects.get(username=username)
+            student = Student.objects.get(user=user)
+        except (User.DoesNotExist, Student.DoesNotExist):
+            return None
+        return Certificate.objects.filter(student=student).filter(payment_status=False)

@@ -3,7 +3,7 @@ from .views import (CertificateApproval, CertificateDetails, RejectCertificate,
                     CertificateListUniversity, CertificateListStudent, CertificateVerification,
                     CertificateDetailsStudent, CertificateDetailsUniversity, EstimateFee,
                     CertificateRequestStudent, CertificateLinkDeprecationMessage,
-                    CertificateRejectionDetails, ConfirmEtherPayment)
+                    CertificateRejectionDetails, ConfirmEtherPayment, PendingPaymentDetails)
 
 urlpatterns = [
     path('certificate-request', CertificateLinkDeprecationMessage.as_view(),
@@ -30,4 +30,5 @@ urlpatterns = [
     path('certificate-rejected', CertificateRejectionDetails.as_view(),
          name='certificate_rejected'),
      path('confirm-ether-payment', ConfirmEtherPayment.as_view(), name='confirm_ether_payment'),
+     path('certificate-pending', PendingPaymentDetails.as_view(), name='certificate_pending')
 ]
