@@ -274,14 +274,11 @@ class CertificateRequestStudent(APIView):
                 'message': 'Already certified for the currently enrolled course'
             })
 
-        # _mutability = request.data._mutable
-        # request.data._mutable = True
+        request.POST._mutable = True
 
         request.data['university'] = UNIVERSITY_CODE
         request.data['course'] = course_details.degree
         request.data['grade_obtained'] = course_details.grade
-
-        # request.data._mutable = _mutability
 
         certificate_view = CertificateRequest.as_view()
         return certificate_view(request._request, *args, **kwargs)
