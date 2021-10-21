@@ -16,5 +16,5 @@ class Certificate(models.Model):
     certified = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
     payment_status = models.BooleanField(default=False)
-    estimated_fee = models.IntegerField(null=True)
+    estimated_fee = models.BigIntegerField(null=True)
     payment_details = models.CharField(max_length=128, null=True)
