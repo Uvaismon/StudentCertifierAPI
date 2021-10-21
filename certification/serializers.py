@@ -9,9 +9,9 @@ from certification_api.settings import contract_helper
 
 class CertificateRequestSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=64)
-    university = serializers.CharField(max_length=64)
-    course = serializers.CharField(max_length=32)
-    grade_obtained = serializers.CharField(max_length=32)
+    # university = serializers.CharField(max_length=64)
+    # course = serializers.CharField(max_length=32)
+    # grade_obtained = serializers.CharField(max_length=32)
     student_id = serializers.CharField(max_length=32)
 
     def authenticate(self, token):

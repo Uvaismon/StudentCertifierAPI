@@ -4,7 +4,7 @@ from .views import (CertificateApproval, CertificateDetails, RejectCertificate,
                     CertificateDetailsStudent, CertificateDetailsUniversity, EstimateFee,
                     CertificateRequestStudent, CertificateLinkDeprecationMessage,
                     CertificateRejectionDetails, ConfirmEtherPayment, PendingPaymentDetails,
-                    EthereumAccountAddress)
+                    EthereumAccountAddress, CertificateRequest)
 
 urlpatterns = [
     path('certificate-request', CertificateLinkDeprecationMessage.as_view(),
@@ -25,7 +25,7 @@ urlpatterns = [
          name='certificate-details-list-university'),
     path('estimate-fee', EstimateFee.as_view(), name='estimate_fee'),
     path('certificate-request-student',
-         CertificateRequestStudent.as_view(), name='certificate_request_student'),
+         CertificateRequest.as_view(), name='certificate_request_student'),
     path('certificate-reject', RejectCertificate.as_view(),
          name='certificate_reject'),
     path('certificate-rejected', CertificateRejectionDetails.as_view(),

@@ -30,7 +30,6 @@ class CertificateRequest(APIView):
     http_method_names = ['post']
 
     def post(self, request):
-        print(request.data)
         result = 0
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
@@ -41,8 +40,45 @@ class CertificateRequest(APIView):
         #     message = 'Student does not belong to the mentioned univeristy'
         #     result = 2
         else:
+            course_details = CourseDetails.objects.filter(
+            student_id=serializer.data['student_id'])
+
+            if not course_details:
+                return Response({
+                    'result': 3,
+                    'message': 'Student is not enrolled into any course'
+                })
+
+            course_details = course_details[0]
+
+            if course_details.status == COURSE_STATUS[0]:
+                return Response({
+                    'result': 4,
+                    'message': 'Course incomplete',
+                })
+
+            if course_details.status == COURSE_STATUS[2]:
+                return Response({
+                    'result': 5,
+                    'message': 'Already requested for the certificate'
+                })
+
+            if course_details.status == COURSE_STATUS[3]:
+                return Response({
+                    'result': 6,
+                    'message': 'Already certified for the currently enrolled course'
+                })
+
+            validated_data = {
+                'token': serializer.data['token'],
+                'university': UNIVERSITY_CODE,
+                'course': course_details.degree,
+                'grade_obtained': course_details.grade,
+                'student_id': serializer.data['student_id']
+            }
+            
             certificate_id = serializer.request(
-                validated_data=serializer.data, user=user)
+                validated_data=validated_data, user=user)
             if certificate_id is None:
                 message = 'University code does not exists'
             else:
