@@ -226,11 +226,11 @@ class CertificateDetailsUniversity(generics.ListAPIView):
 class EstimateFee(APIView):
 
     def get(self, request):
-        usd = contract_helper.estimate_fee()
+        usd = contract_helper.estimate_fee() + 5
         usd = round(usd, 2)
 
-        wei = contract_helper.estimate_fee_wei()
-        ether = f'{wei / 10 ** 18 : .18f}'
+        wei = contract_helper.estimate_fee_wei() + 20000000000000
+        ether = f'{wei / 10 ** 18 : .5f}'
         return Response({
             'USD': usd,
             'WEI': wei,
