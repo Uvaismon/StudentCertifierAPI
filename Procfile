@@ -1,1 +1,1 @@
-web: gunicorn -c gconfig.py certification_api.wsgi --timeout 60
+web: gunicorn -c gconfig.py certification_api.wsgi --timeout 60 --keep-alive 5 --log-level debug
