@@ -1,1 +1,1 @@
-web: gunicorn -c gconfig.py certification_api.wsgi
+web: gunicorn -c gconfig.py certification_api.wsgi --timeout 60
