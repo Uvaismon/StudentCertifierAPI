@@ -20,20 +20,20 @@ class ContractHelper:
         self.contract = self.w3.eth.contract(address=contract_address, abi=self.abi)
 
     def add_hash(self, certificate_id, certificate_hash):
-        try:
-            transaction = self.contract.functions.add_hash(certificate_id, certificate_hash).buildTransaction({
-                'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS')),
-                'from': config('ETHEREUM_ACCOUNT_ADDRESS')
-            })
-            
-            signed_transaction = self.w3.eth.account.signTransaction(
-                transaction, config('ETHEREUM_ACCOUNT_PRIVATE_KEY'))
-            transaction_hash = self.w3.eth.sendRawTransaction(
-                signed_transaction.rawTransaction)
-            self.w3.eth.wait_for_transaction_receipt(transaction_hash)
-        except:
-            time.sleep(10)
-            return self.add_hash(certificate_id, certificate_hash)
+        # try:
+        transaction = self.contract.functions.add_hash(certificate_id, certificate_hash).buildTransaction({
+            'nonce': self.w3.eth.getTransactionCount(config('ETHEREUM_ACCOUNT_ADDRESS'), 'pending'),
+            'from': config('ETHEREUM_ACCOUNT_ADDRESS')
+        })
+        
+        signed_transaction = self.w3.eth.account.signTransaction(
+            transaction, config('ETHEREUM_ACCOUNT_PRIVATE_KEY'))
+        transaction_hash = self.w3.eth.sendRawTransaction(
+            signed_transaction.rawTransaction)
+            # self.w3.eth.wait_for_transaction_receipt(transaction_hash)
+        # except:
+        #     time.sleep(1)
+        #     return self.add_hash(certificate_id, certificate_hash)
         return transaction_hash
 
     def get_hash(self, certificate_id):
