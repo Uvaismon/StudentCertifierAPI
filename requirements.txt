@@ -5,6 +5,7 @@ async-timeout==3.0.1
 attrs==21.2.0
 base58==2.1.0
 bitarray==1.2.2
+cachetools==4.2.4
 certifi==2021.5.30
 chardet==4.0.0
 charset-normalizer==2.0.6
@@ -13,6 +14,7 @@ dj-database-url==0.5.0
 Django==3.2.7
 django-cors-headers==3.8.0
 django-heroku==0.3.1
+django-storages==1.12.2
 djangorestframework==3.12.4
 eth-abi==2.1.1
 eth-account==0.5.5
@@ -24,6 +26,12 @@ eth-typing==2.2.2
 eth-utils==1.10.0
 future==0.18.2
 gcloud==0.17.0
+google-api-core==2.2.1
+google-auth==2.3.2
+google-cloud-core==2.1.0
+google-cloud-storage==1.42.3
+google-crc32c==1.3.0
+google-resumable-media==2.1.0
 googleapis-common-protos==1.53.0
 gunicorn==20.1.0
 hexbytes==0.2.2
@@ -55,8 +63,9 @@ python-bidi==0.4.2
 python-decouple==3.4
 python-jwt==2.0.1
 pytz==2021.1
+pywin32==302
 reportlab==3.6.1
-requests==2.11.1
+requests==2.26.0
 requests-toolbelt==0.7.0
 rlp==2.0.1
 rsa==4.7.2
