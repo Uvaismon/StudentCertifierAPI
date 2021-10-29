@@ -2,6 +2,7 @@ from xhtml2pdf import pisa
 import jinja2
 import os
 from django.conf import settings
+from certification_api.settings import firebase_storage
 
 
 def from_html(context):
@@ -19,4 +20,9 @@ def from_html(context):
     certificate = open(output_file, 'wb')
     pisa.CreatePDF(src=source_html, dest=certificate)
     certificate.close()
-    return certificate.name
+    return f'{context["certificate_id"]}.pdf'
+
+def from_database(file_name):
+    buffer_loc = os.path.join(settings.BASE_DIR, 'certification', 'file_buffer', file_name)
+    firebase_storage.child(file_name).download(buffer_loc)
+    return file_name

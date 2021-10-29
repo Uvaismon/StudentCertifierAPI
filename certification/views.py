@@ -1,8 +1,6 @@
-from re import A
-
 from rest_framework.utils.serializer_helpers import ReturnList
 from authenticate.models import Student, University
-from rest_framework import generics, serializers
+from rest_framework import generics
 from rest_framework.views import APIView, Response
 
 from certification.helper_functions.student_helper import verify_student
@@ -10,7 +8,7 @@ from .serializers import (CertificateRequestSerializer, CertificateApproveSerial
                           CertificateDetailsSerializer, CertificateListSerializer,
                           CertificateVerificationSerializer, CertificateRequestStudentSerializer,
                           ConfirmEtherPaymentSerializer)
-from .helper_functions.pdf_helper import from_html
+from .helper_functions.pdf_helper import from_html, from_database
 from .helper_functions.hash_helper import hash_from_file, from_file_object
 from datetime import date
 from certification_api.settings import contract_helper, firebase_storage, UNIVERSITY_CODE
@@ -21,6 +19,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from scaffolding.models import CourseDetails, COURSE_STATUS
 from decouple import config
+from django.conf import settings
 
 # Create your views here.
 
@@ -117,19 +116,23 @@ class CertificateApproval(APIView):
                     'grade_obtained': certificate.grade_obtained,
                     'email': certificate.student.user.email,
                 }
-                certificate_filename = from_html(context)
+                course_details = CourseDetails.objects.get(pk=certificate.studentId)
+                if not course_details.certificate:
+                    certificate_filename = from_html(context)
+                    firebase_storage.child(certificate_filename).put(
+                        os.path.join(settings.BASE_DIR, 'certification', 'file_buffer', certificate_filename))
+                else:
+                    certificate_filename = from_database(str(course_details.certificate))
                 file_hash = hash_from_file(certificate_filename)
                 contract_helper.add_hash(certificate.certificate_id, file_hash)
-                firebase_storage.child(f'{certificate.certificate_id}.pdf').put(
-                    certificate_filename)
                 url = firebase_storage.child(
-                    f'{certificate.certificate_id}.pdf').get_url(None)
+                    certificate_filename).get_url(None)
                 certificate.certificate_link = url
                 certificate.certified = True
                 certificate.save()
                 context['url'] = url
                 send_mail(context)
-                os.remove(certificate_filename)
+                os.remove(os.path.join(settings.BASE_DIR, 'certification', 'file_buffer', certificate_filename))
                 result = 1
                 message = 'Certificate generated successfully'
 

@@ -15,3 +15,4 @@ class CourseDetails(models.Model):
     degree = models.CharField(max_length=32)
     grade = models.CharField(max_length=32)
     status = models.CharField(max_length=32, default=COURSE_STATUS[1])
+    certificate = models.FileField(null=True, blank=True)
