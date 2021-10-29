@@ -63,7 +63,6 @@ python-bidi==0.4.2
 python-decouple==3.4
 python-jwt==2.0.1
 pytz==2021.1
-pywin32==302
 reportlab==3.6.1
 requests==2.26.0
 requests-toolbelt==0.7.0
