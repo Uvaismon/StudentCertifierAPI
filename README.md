@@ -1,3 +1,28 @@
+# SETUP
+
+## Database migration  
+```
+python manage.py migrate  
+```
+
+## Activate the virtual environment
+
+### Windows
+```
+venv\Scripts\activate.bat
+```
+
+
+## Start the server
+```
+python manage.py runserver
+```
+ 
+<br/>  
+
+# API Documentation
+<br/> 
+
 > ## ***/auth/register/<user_type>***  
 > Create user account.  
 > 
